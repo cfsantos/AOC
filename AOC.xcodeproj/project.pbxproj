@@ -14,6 +14,8 @@
 		E40E330E1B2EE95E00E7DAEB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E40E330D1B2EE95E00E7DAEB /* Images.xcassets */; };
 		E40E33111B2EE95E00E7DAEB /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E40E330F1B2EE95E00E7DAEB /* LaunchScreen.xib */; };
 		E40E331D1B2EE95E00E7DAEB /* AOCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E331C1B2EE95E00E7DAEB /* AOCTests.m */; };
+		E40E33281B2EE99C00E7DAEB /* AOC.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E33271B2EE99C00E7DAEB /* AOC.m */; };
+		E40E332A1B2EEA0D00E7DAEB /* cities.txt in Resources */ = {isa = PBXBuildFile; fileRef = E40E33291B2EEA0D00E7DAEB /* cities.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +42,9 @@
 		E40E33161B2EE95E00E7DAEB /* AOCTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AOCTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E40E331B1B2EE95E00E7DAEB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E40E331C1B2EE95E00E7DAEB /* AOCTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AOCTests.m; sourceTree = "<group>"; };
+		E40E33261B2EE99C00E7DAEB /* AOC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AOC.h; sourceTree = "<group>"; };
+		E40E33271B2EE99C00E7DAEB /* AOC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AOC.m; sourceTree = "<group>"; };
+		E40E33291B2EEA0D00E7DAEB /* cities.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cities.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +94,9 @@
 				E40E330D1B2EE95E00E7DAEB /* Images.xcassets */,
 				E40E330F1B2EE95E00E7DAEB /* LaunchScreen.xib */,
 				E40E33001B2EE95E00E7DAEB /* Supporting Files */,
+				E40E33261B2EE99C00E7DAEB /* AOC.h */,
+				E40E33271B2EE99C00E7DAEB /* AOC.m */,
+				E40E33291B2EEA0D00E7DAEB /* cities.txt */,
 			);
 			path = AOC;
 			sourceTree = "<group>";
@@ -202,6 +210,7 @@
 				E40E330C1B2EE95E00E7DAEB /* Main.storyboard in Resources */,
 				E40E33111B2EE95E00E7DAEB /* LaunchScreen.xib in Resources */,
 				E40E330E1B2EE95E00E7DAEB /* Images.xcassets in Resources */,
+				E40E332A1B2EEA0D00E7DAEB /* cities.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +231,7 @@
 				E40E33091B2EE95E00E7DAEB /* ViewController.m in Sources */,
 				E40E33061B2EE95E00E7DAEB /* AppDelegate.m in Sources */,
 				E40E33031B2EE95E00E7DAEB /* main.m in Sources */,
+				E40E33281B2EE99C00E7DAEB /* AOC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
