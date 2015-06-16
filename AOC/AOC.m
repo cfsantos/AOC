@@ -57,7 +57,6 @@
     
     float part1 = powf((xPoint1 - xPoint2), 2);
     float part2 = powf((yPoint1 - yPoint2), 2);
-    float part3 = sqrtf(part1 + part2);
     
     return sqrtf(part1 + part2);
     
@@ -78,8 +77,28 @@
 
 -(void)nextAntsCity{
     for (Ant *anAnt in self.listOfAnts) {
-        
+        for (int counter = 0; counter < NUMBEROFPOINTS; counter++) {
+            
+            //if this ant didn't visited this city
+            if (![anAnt.visitedCities containsObject:@(counter)]) {
+                int pheromone = [self pheromoneLevelFromCity:anAnt.actualCity toCity:counter];
+                float cityVisibility = [self cityVisibilityFromCity:anAnt.actualCity toCity:counter];
+                
+            } else {
+                //city already visited, chances are 0
+                [anAnt setChances:0 forCity:counter];
+            }
+        }
     }
+}
+
+-(int)pheromoneLevelFromCity:(int)fromCity toCity:(int)toCity{
+    return pheromone[fromCity][toCity];
+}
+
+-(float)cityVisibilityFromCity:(int)fromCity toCity:(int)toCity{
+    float distance = distanceBetweenCities[fromCity][toCity];
+    return [self cityVisibilityForDistance:distance];
 }
 
 -(float)cityVisibilityForDistance:(float)distance{
