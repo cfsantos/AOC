@@ -7,13 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Ant.h"
 
-#define NUMBEROFPOINTS 52
+
 @interface AOC : NSObject{
     float cityPoint[NUMBEROFPOINTS][2];
     float distanceBetweenCities[NUMBEROFPOINTS][NUMBEROFPOINTS];
+    int pheromone[NUMBEROFPOINTS][NUMBEROFPOINTS];
 }
 
+@property(nonatomic, strong)NSArray *listOfAnts;
+
+-(instancetype)initWithNumberOfAnts:(int)numberOfAnts;
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName;
 
 @end

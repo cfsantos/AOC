@@ -16,6 +16,7 @@
 		E40E331D1B2EE95E00E7DAEB /* AOCTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E331C1B2EE95E00E7DAEB /* AOCTests.m */; };
 		E40E33281B2EE99C00E7DAEB /* AOC.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E33271B2EE99C00E7DAEB /* AOC.m */; };
 		E40E332A1B2EEA0D00E7DAEB /* cities.txt in Resources */ = {isa = PBXBuildFile; fileRef = E40E33291B2EEA0D00E7DAEB /* cities.txt */; };
+		E40E332D1B2F5EB400E7DAEB /* Ant.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E332C1B2F5EB400E7DAEB /* Ant.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,8 @@
 		E40E33261B2EE99C00E7DAEB /* AOC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AOC.h; sourceTree = "<group>"; };
 		E40E33271B2EE99C00E7DAEB /* AOC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AOC.m; sourceTree = "<group>"; };
 		E40E33291B2EEA0D00E7DAEB /* cities.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cities.txt; sourceTree = "<group>"; };
+		E40E332B1B2F5EB400E7DAEB /* Ant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ant.h; sourceTree = "<group>"; };
+		E40E332C1B2F5EB400E7DAEB /* Ant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ant.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +100,8 @@
 				E40E33261B2EE99C00E7DAEB /* AOC.h */,
 				E40E33271B2EE99C00E7DAEB /* AOC.m */,
 				E40E33291B2EEA0D00E7DAEB /* cities.txt */,
+				E40E332B1B2F5EB400E7DAEB /* Ant.h */,
+				E40E332C1B2F5EB400E7DAEB /* Ant.m */,
 			);
 			path = AOC;
 			sourceTree = "<group>";
@@ -228,6 +233,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E40E332D1B2F5EB400E7DAEB /* Ant.m in Sources */,
 				E40E33091B2EE95E00E7DAEB /* ViewController.m in Sources */,
 				E40E33061B2EE95E00E7DAEB /* AppDelegate.m in Sources */,
 				E40E33031B2EE95E00E7DAEB /* main.m in Sources */,
@@ -426,6 +432,7 @@
 				E40E33221B2EE95E00E7DAEB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E40E33231B2EE95E00E7DAEB /* Build configuration list for PBXNativeTarget "AOCTests" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +441,7 @@
 				E40E33251B2EE95E00E7DAEB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -10,6 +10,23 @@
 
 @implementation AOC
 
+-(instancetype)initWithNumberOfAnts:(int)numberOfAnts{
+    self = [super init];
+    if (self) {
+        NSMutableArray *array = [NSMutableArray new];
+        for (int counter = 0; counter < numberOfAnts; counter++) {
+            Ant *anAnt = [Ant new];
+            anAnt.firstCity = counter;
+            anAnt.actualCity = counter;
+            [array addObject:anAnt];
+        }
+        self.listOfAnts = [array copy];
+        array = nil;
+    }
+    
+    return self;
+}
+
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName{
     NSString* path = [[NSBundle mainBundle] pathForResource:fileName
                                                      ofType:@"txt"];
@@ -55,7 +72,26 @@
                                                                          yPoint2:cityPoint[y][2]];
         }
     }
+}
 
+#pragma mark - walking into cities
+
+-(void)nextAntsCity{
+    for (Ant *anAnt in self.listOfAnts) {
+        
+    }
+}
+
+-(float)cityVisibilityForDistance:(float)distance{
+    return 1/distance;
+}
+
+-(float)chancesOfGointToCity:(int)toCity fromCity:(int)fromCity{
+    return 0;
+}
+
+-(void)updatePheromone{
+    
 }
 
 @end
