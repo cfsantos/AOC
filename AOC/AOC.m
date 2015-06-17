@@ -8,6 +8,8 @@
 
 #import "AOC.h"
 
+#define ARC4RANDOM_MAX      0x100000000
+
 @implementation AOC
 
 -(instancetype)initWithNumberOfAnts:(int)numberOfAnts{
@@ -22,9 +24,62 @@
         }
         self.listOfAnts = [array copy];
         array = nil;
+        
+        self.citiesNotVisited = [self initialCitiesNotVisited];
     }
     
     return self;
+}
+
+-(void)setInitialPheromone{
+    for (int x = 0; x < NUMBEROFPOINTS; x++) {
+        for (int y = 0; y < NUMBEROFPOINTS; y++) {
+            if (x == y) {
+                pheromone[x][y] = 0;
+            } else {
+                pheromone[x][y] = 0.000000001;
+            }
+        }
+    }
+}
+
+-(NSArray *)initialCitiesNotVisited{
+    NSMutableArray *returnValue = [NSMutableArray new];
+    for (int counter = 0; counter < NUMBEROFPOINTS; counter++) {
+        returnValue[counter] = @(counter);
+    }
+    
+    return [returnValue copy];
+}
+
+-(void)buildPathForAnt:(Ant *)ant{
+    NSMutableArray *citiesNotVisited = [self.citiesNotVisited mutableCopy];
+    [citiesNotVisited removeObject:@(ant.firstCity)];
+    [ant.visitedCities addObject:@(ant.firstCity)];
+    
+    NSMutableArray *arrayOfChances = [NSMutableArray new];
+    
+    for (int x = 0; x < NUMBEROFPOINTS; x++) {
+        
+        float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity toCity:x];
+        float cityVisibility = [self cityVisibilityFromCity:ant.actualCity toCity:x];
+        float sumOfChances = [self sumOfChancesForAnt:ant];
+        
+        float probability = pheromoneQuantity * cityVisibility / sumOfChances;
+        if (x == ant.firstCity) {
+            probability = 0;
+        }
+        
+        [arrayOfChances addObject:@(probability)];
+    }
+    float sumOfChances = [self sumOfChancesForAnt:ant];
+    float target = [self randonBetweenMinimunValue:0 andMaximunValue:sumOfChances];
+    
+    for (int x = 0; x < NUMBEROFPOINTS; x++){
+        //TODO: get point for this chance
+        
+    }
+    
 }
 
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName{
@@ -130,6 +185,17 @@
 -(void)updatePheromone{
     
     
+}
+
+#pragma mark - utils
+
+-(int)randonIntBetweenLowerBound:(int)lowerBound andUpperBound:(int)upperBound{
+    return lowerBound + arc4random() % (upperBound - lowerBound);
+}
+
+//generates a float randon between 2 values
+-(float)randonBetweenMinimunValue:(float)minimunValue andMaximunValue:(float)maximunValue{
+    return ((float)arc4random() / ARC4RANDOM_MAX * (maximunValue - minimunValue)) + minimunValue;
 }
 
 @end

@@ -17,6 +17,7 @@
 }
 
 @property(nonatomic, strong)NSArray *listOfAnts;
+@property(nonatomic, strong)NSArray *citiesNotVisited;
 
 -(instancetype)initWithNumberOfAnts:(int)numberOfAnts;
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName;
