@@ -19,7 +19,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    AOC *aoc = [AOC new];
+    AOC *aoc = [[AOC alloc] initWithNumberOfAnts:NUMBEROFPOINTS];
     
     [aoc setDistanceBetweenCitiesFromFileName:@"cities"];
 }
