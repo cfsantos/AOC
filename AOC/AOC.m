@@ -81,8 +81,11 @@
             
             //if this ant didn't visited this city
             if (![anAnt.visitedCities containsObject:@(counter)]) {
-                int pheromone = [self pheromoneLevelFromCity:anAnt.actualCity toCity:counter];
+                float pheromoneQuantity = [self pheromoneLevelFromCity:anAnt.actualCity toCity:counter];
                 float cityVisibility = [self cityVisibilityFromCity:anAnt.actualCity toCity:counter];
+                float sumOfChances = [self sumOfChancesForAnt:anAnt];
+                
+                float probability = pheromoneQuantity * cityVisibility / sumOfChances;
                 
             } else {
                 //city already visited, chances are 0
@@ -92,7 +95,22 @@
     }
 }
 
--(int)pheromoneLevelFromCity:(int)fromCity toCity:(int)toCity{
+-(float)sumOfChancesForAnt:(Ant *)ant{
+    float returnValue = 0;
+    for (int counter = 0; counter < NUMBEROFPOINTS; counter++) {
+        if ([ant.visitedCities containsObject:@(counter)]) {
+            if (ant.actualCity != counter) {
+                float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity toCity:counter];
+                float cityVisibility = [self cityVisibilityFromCity:ant.actualCity toCity:counter];
+                returnValue += pheromoneQuantity * cityVisibility;
+            }
+            
+        }
+    }
+    return returnValue;
+}
+
+-(float)pheromoneLevelFromCity:(int)fromCity toCity:(int)toCity{
     return pheromone[fromCity][toCity];
 }
 
@@ -110,6 +128,7 @@
 }
 
 -(void)updatePheromone{
+    
     
 }
 

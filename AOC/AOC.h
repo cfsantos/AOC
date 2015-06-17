@@ -13,7 +13,7 @@
 @interface AOC : NSObject{
     float cityPoint[NUMBEROFPOINTS][2];
     float distanceBetweenCities[NUMBEROFPOINTS][NUMBEROFPOINTS];
-    int pheromone[NUMBEROFPOINTS][NUMBEROFPOINTS];
+    float pheromone[NUMBEROFPOINTS][NUMBEROFPOINTS];
 }
 
 @property(nonatomic, strong)NSArray *listOfAnts;
