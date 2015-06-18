@@ -30,6 +30,6 @@
 
 
 -(instancetype)initWithNumberOfAnts:(int)numberOfAnts;
--(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName;
+
 
 @end

@@ -21,7 +21,7 @@
     
     AOC *aoc = [[AOC alloc] initWithNumberOfAnts:NUMBEROFPOINTS];
     
-    [aoc setDistanceBetweenCitiesFromFileName:@"cities"];
+    //[aoc setDistanceBetweenCitiesFromFileName:@"cities"];
 }
 
 - (void)didReceiveMemoryWarning {

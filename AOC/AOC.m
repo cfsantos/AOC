@@ -6,9 +6,22 @@
 //  Copyright (c) 2015 Claudio Filipi Goncalves dos Santos. All rights reserved.
 //
 
+
+/*
+ questions:
+ 
+ should I update pheromone trail every time an ant goes through this path or only in the end of all iteractions?
+ 
+ how to interpret the equation of update pheromone?
+ 
+ */
+
 #import "AOC.h"
 
 #define ARC4RANDOM_MAX      0x100000000
+#define MAXITERACTIONS      50
+#define QU                  5
+
 
 @implementation AOC
 
@@ -47,11 +60,21 @@
         //get the best path for initial ants
         [self bestValues];
     }
-    
-    
-    
     return self;
 }
+
+//AOC in action: iteracts a given number of times and returns the best values
+-(void)findBestPath{
+    for (int counter = 0; counter < MAXITERACTIONS; counter++) {
+        for (Ant *ant in self.listOfAnts) {
+            [self buildPathForAnt:ant];
+            [self updatePheromone];
+        }
+        
+        [self bestValues];
+    }
+}
+
 
 //creates a initial value for pheromones
 -(void)setInitialPheromone{
@@ -94,27 +117,20 @@
         //repeat until this ant visit all cities
         for (int x = 0; x < [citiesNotVisited count]; x++) {
             
-            float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity
-                                                            toCity:[citiesNotVisited[x] intValue]];
+            //calculation based on pheromone, visibility and sum of all cities
+            float probability = [self probabilityOfWalkingFromCity:ant.actualCity
+                                                            toCity:[citiesNotVisited[x] intValue]
+                                                             ofAnt:ant];
             
-            float cityVisibility = [self cityVisibilityFromCity:ant.actualCity
-                                                         toCity:[citiesNotVisited[x] intValue]];
-            
-            float sumOfChances = [self sumOfChancesForAnt:ant];
-            
-            float probability = pheromoneQuantity * cityVisibility / sumOfChances;
-            if ([citiesNotVisited[x] intValue] == ant.firstCity) {
-                probability = -1;
-                [arrayOfChances addObject:@(probability)];
-            } else {
-                probabilityInThisPosition += probability;
-                [arrayOfChances addObject:@(probabilityInThisPosition)];
-            }
-            
+            //roullete chances
+            probabilityInThisPosition += probability;
+            [arrayOfChances addObject:@(probabilityInThisPosition)];
             
         }
-
+        
+        //randon number that will say what path this ant will walk
         float target = [self randonBetweenMinimunValue:0 andMaximunValue:1];
+        
         
         for (int x = 0; x < [citiesNotVisited count]; x++){
             //get chances of this city to be the next city to be visited
@@ -164,6 +180,8 @@
 
 //gets the file and set the distances from all cities
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName{
+    
+    //parse the file
     NSString* path = [[NSBundle mainBundle] pathForResource:fileName
                                                      ofType:@"txt"];
     
@@ -172,6 +190,7 @@
                                                         error:NULL];
     NSArray *fileComponents = [fileString componentsSeparatedByString:@"\n"];
     
+    //generates a matrix of points of these cities
     int counter = 0;
     for (NSString *aLine in fileComponents) {
         NSArray *fileComponents = [aLine componentsSeparatedByString:@" "];
@@ -180,6 +199,7 @@
         counter++;
     }
     
+    //set the distance between all cities
     [self setDistanceBetweenCities];
     
 }
@@ -211,6 +231,27 @@
 
 #pragma mark - walking into cities
 
+//returns the calculation based on pheromone, visibility and sum of all cities
+-(float)probabilityOfWalkingFromCity:(int)fromCity
+                              toCity:(int)toCity
+                               ofAnt:(Ant *)ant{
+    
+    //get pheromone level
+    float pheromoneQuantity = [self pheromoneLevelFromCity:fromCity
+                                                    toCity:toCity];
+    
+    //get visibility
+    float cityVisibility = [self cityVisibilityFromCity:fromCity
+                                                 toCity:toCity];
+    
+    //calculates the chance of going to all cities
+    float sumOfChances = [self sumOfChancesForAnt:ant];
+    
+    //returns the calculation based on pheromone, visibility and sum of all cities
+    return pheromoneQuantity * cityVisibility / sumOfChances;
+}
+
+
 -(float)sumOfChancesForAnt:(Ant *)ant{
     float returnValue = 0;
     for (int counter = 0; counter < NUMBEROFPOINTS; counter++) {
@@ -226,10 +267,12 @@
     return returnValue;
 }
 
+//returns pheromone level between 2 cities
 -(float)pheromoneLevelFromCity:(int)fromCity toCity:(int)toCity{
     return pheromone[fromCity][toCity];
 }
 
+//returns city visibility between 2 cities
 -(float)cityVisibilityFromCity:(int)fromCity toCity:(int)toCity{
     float distance = distanceBetweenCities[fromCity][toCity];
     if (distance == 0) {
@@ -238,6 +281,7 @@
     return [self cityVisibilityForDistance:distance];
 }
 
+//returns city visibility based on the distance between 2 cities
 -(float)cityVisibilityForDistance:(float)distance{
     return 1/distance;
 }
@@ -253,6 +297,7 @@
 
 #pragma mark - best values
 
+//returns the best path after all ants walk
 -(void)bestValues{
     for (Ant *anAnt in self.listOfAnts) {
         if (anAnt.pathSize < self.bestPathSize) {
