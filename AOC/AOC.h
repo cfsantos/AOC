@@ -16,8 +16,18 @@
     float pheromone[NUMBEROFPOINTS][NUMBEROFPOINTS];
 }
 
+//array of ants
 @property(nonatomic, strong)NSArray *listOfAnts;
+
+//helper that returns the list of all cities
 @property(nonatomic, strong)NSArray *citiesNotVisited;
+
+//best path found
+@property(nonatomic, strong)NSArray *bestPath;
+
+//size of the best path
+@property(nonatomic)float bestPathSize;
+
 
 -(instancetype)initWithNumberOfAnts:(int)numberOfAnts;
 -(void)setDistanceBetweenCitiesFromFileName:(NSString *)fileName;

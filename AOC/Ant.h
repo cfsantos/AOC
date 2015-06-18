@@ -14,11 +14,12 @@
     float chancesOfGoingToCity[NUMBEROFPOINTS];
 }
 
-@property(nonatomic, copy)NSMutableArray *visitedCities;
+@property(nonatomic, strong)NSMutableArray *visitedCities;
 @property(nonatomic)float pathSize;
 @property(nonatomic)int firstCity;
 @property(nonatomic)int actualCity;
 
 -(void)setChances:(float)chances forCity:(int)city;
+-(instancetype)init;
 
 @end

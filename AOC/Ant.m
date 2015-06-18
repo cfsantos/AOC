@@ -10,6 +10,16 @@
 
 @implementation Ant
 
+-(instancetype)init {
+    self = [super init];
+    
+    if (self) {
+        self.visitedCities = [NSMutableArray new];
+    }
+    
+    return self;
+}
+
 -(void)setChances:(float)chances forCity:(int)city{
     chancesOfGoingToCity[city] = chances;
 }
