@@ -30,6 +30,7 @@
 
 
 -(instancetype)initWithNumberOfAnts:(int)numberOfAnts;
+-(void)findBestPath;
 
 
 @end

@@ -21,6 +21,7 @@
 #define ARC4RANDOM_MAX      0x100000000
 #define MAXITERACTIONS      50
 #define QU                  5
+#define RO                  0.2
 
 
 @implementation AOC
@@ -32,7 +33,7 @@
         
         //set initial ants
         for (int counter = 0; counter < numberOfAnts; counter++) {
-            Ant *anAnt = [Ant new];
+            Ant *anAnt = [[Ant alloc] init];
             anAnt.firstCity = counter;
             anAnt.actualCity = counter;
             [array addObject:anAnt];
@@ -68,9 +69,9 @@
     for (int counter = 0; counter < MAXITERACTIONS; counter++) {
         for (Ant *ant in self.listOfAnts) {
             [self buildPathForAnt:ant];
-            [self updatePheromone];
+            //ant.visitedCities = @[(ant.firstCity)];
         }
-        
+        [self updatePheromone];
         [self bestValues];
     }
 }
@@ -83,7 +84,7 @@
             if (x == y) {
                 pheromone[x][y] = 0;
             } else {
-                pheromone[x][y] = 0.000000001;
+                pheromone[x][y] = 0.00001;
             }
         }
     }
@@ -121,6 +122,14 @@
             float probability = [self probabilityOfWalkingFromCity:ant.actualCity
                                                             toCity:[citiesNotVisited[x] intValue]
                                                              ofAnt:ant];
+            
+            if (probability >= 1) {
+                NSLog(@"Error! probability to high: %f", probability);
+            }
+            
+            if (probability < 0) {
+                NSLog(@"Error! probability to low: %f", probability);
+            }
             
             //roullete chances
             probabilityInThisPosition += probability;
@@ -292,6 +301,20 @@
 
 -(void)updatePheromone{
     
+    for (int x = 0; x < NUMBEROFPOINTS; x++) {
+        for (int y = 0;y < NUMBEROFPOINTS; y++) {
+            pheromone[x][y] = (1 - RO) * pheromone[x][y];
+        }
+    }
+    
+    for (Ant *ant in self.listOfAnts) {
+        for (int counter = 0; counter < [ant.visitedCities count]; counter++) {
+            int thisCity = [ant.visitedCities[counter] intValue];
+            int nextCity = [ant.visitedCities[counter + 1] intValue];
+            
+            pheromone[thisCity][nextCity] = QU * distanceBetweenCities[thisCity][nextCity];
+        }
+    }
     
 }
 
@@ -304,6 +327,7 @@
             self.bestPathSize = anAnt.pathSize;
             self.bestPath = anAnt.visitedCities;
         }
+        [anAnt.visitedCities removeAllObjects];
     }
 }
 
