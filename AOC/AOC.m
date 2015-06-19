@@ -19,10 +19,13 @@
 #import "AOC.h"
 
 #define ARC4RANDOM_MAX      0x100000000
-#define MAXITERACTIONS      100
-#define QU                  100
-#define RO                  0.1
-#define INITIALPHEROMONE    0.00000001
+#define MAXITERACTIONS      10000
+#define QU                  10
+#define RO                  0.5
+#define INITIALPHEROMONE    0.000001
+#define ALPHA               2
+#define BETA                5
+#define MINIMUNPOSSIBILITY  0.000000001
 
 
 @implementation AOC
@@ -277,8 +280,14 @@
     float cityVisibility = [self cityVisibilityFromCity:fromCity
                                                  toCity:toCity];
     
+    
+    
     //returns the calculation based on pheromone, visibility and sum of all cities
-    return pheromoneQuantity * cityVisibility / sumOfChances;
+    float returnValue = pheromoneQuantity * cityVisibility / sumOfChances;
+    
+    returnValue = (returnValue > 0 ? returnValue : MINIMUNPOSSIBILITY);
+    
+    return returnValue;
 }
 
 
@@ -309,7 +318,10 @@
         int city = [cityNotVisited intValue];
         float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity toCity:city];
         float cityVisibility = [self cityVisibilityFromCity:ant.actualCity toCity:city];
-        returnValue += pheromoneQuantity * cityVisibility;
+        
+        returnValue += (pheromoneQuantity * cityVisibility > 0 ? pheromoneQuantity * cityVisibility : MINIMUNPOSSIBILITY);
+        
+        //returnValue += pheromoneQuantity * cityVisibility;
     }
     return returnValue;
 }
@@ -362,7 +374,7 @@
 -(void)bestValuesinIteraction:(int)iteraction{
     for (Ant *anAnt in self.listOfAnts) {
         if (anAnt.pathSize < self.bestPathSize) {
-            NSLog(@"Best path for ant %i iteraction %i", anAnt.firstCity, iteraction);
+            NSLog(@"Best path for ant %i iteraction %i value %f", anAnt.firstCity, iteraction, anAnt.pathSize);
             self.bestPathSize = anAnt.pathSize ;
             self.bestPath = [anAnt.visitedCities copy];
         }
