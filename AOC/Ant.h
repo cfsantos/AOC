@@ -15,6 +15,7 @@
 }
 
 @property(nonatomic, strong)NSMutableArray *visitedCities;
+@property(nonatomic, strong)NSMutableArray *citiesNotVisited;
 @property(nonatomic)float pathSize;
 @property(nonatomic)int firstCity;
 @property(nonatomic)int actualCity;

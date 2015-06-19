@@ -19,9 +19,10 @@
 #import "AOC.h"
 
 #define ARC4RANDOM_MAX      0x100000000
-#define MAXITERACTIONS      50
-#define QU                  5
-#define RO                  0.2
+#define MAXITERACTIONS      100
+#define QU                  100
+#define RO                  0.1
+#define INITIALPHEROMONE    0.00000001
 
 
 @implementation AOC
@@ -59,20 +60,31 @@
         }
         
         //get the best path for initial ants
-        [self bestValues];
+        [self bestValuesinIteraction:-1];
     }
     return self;
 }
 
 //AOC in action: iteracts a given number of times and returns the best values
 -(void)findBestPath{
+    
+    [self resetAnts];
+    
     for (int counter = 0; counter < MAXITERACTIONS; counter++) {
         for (Ant *ant in self.listOfAnts) {
             [self buildPathForAnt:ant];
             //ant.visitedCities = @[(ant.firstCity)];
         }
         [self updatePheromone];
-        [self bestValues];
+        [self bestValuesinIteraction:counter];
+        [self resetAnts];
+    }
+}
+
+-(void)resetAnts{
+    for (Ant *ant in self.listOfAnts) {
+        [ant.visitedCities removeAllObjects];
+        ant.pathSize = 0;
     }
 }
 
@@ -84,7 +96,7 @@
             if (x == y) {
                 pheromone[x][y] = 0;
             } else {
-                pheromone[x][y] = 0.00001;
+                pheromone[x][y] = INITIALPHEROMONE;
             }
         }
     }
@@ -104,32 +116,30 @@
 -(void)buildPathForAnt:(Ant *)ant{
     
     //copy the array of cities not visited
-    NSMutableArray *citiesNotVisited = [self.citiesNotVisited mutableCopy];
+    ant.citiesNotVisited = [self.citiesNotVisited mutableCopy];
     
     //first city is already visited, so removes it form cities not visited and add to the list of cities that this ant has visited
-    [citiesNotVisited removeObject:@(ant.firstCity)];
+    [ant.citiesNotVisited removeObject:@(ant.firstCity)];
     [ant.visitedCities addObject:@(ant.firstCity)];
-    
     
     NSMutableArray *arrayOfChances = [NSMutableArray new];
     float probabilityInThisPosition = 0;
     
-    while ([citiesNotVisited count] > 0) {
+    while ([ant.citiesNotVisited count] > 0) {
         //repeat until this ant visit all cities
-        for (int x = 0; x < [citiesNotVisited count]; x++) {
+        float sumOfChances = [self sumOfChancesForAnt:ant];
+        for (int x = 0; x < [ant.citiesNotVisited count]; x++) {
             
             //calculation based on pheromone, visibility and sum of all cities
+//            float probability = [self probabilityOfWalkingFromCity:ant.actualCity
+//                                                            toCity:[ant.citiesNotVisited[x] intValue]
+//                                                             ofAnt:ant];
+            
             float probability = [self probabilityOfWalkingFromCity:ant.actualCity
-                                                            toCity:[citiesNotVisited[x] intValue]
-                                                             ofAnt:ant];
+                                                            toCity:[ant.citiesNotVisited[x] intValue]
+                                                      sumOfChances:sumOfChances];
             
-            if (probability >= 1) {
-                NSLog(@"Error! probability to high: %f", probability);
-            }
-            
-            if (probability < 0) {
-                NSLog(@"Error! probability to low: %f", probability);
-            }
+//            NSLog(@"probability = %f", probability);
             
             //roullete chances
             probabilityInThisPosition += probability;
@@ -137,11 +147,13 @@
             
         }
         
+        //NSLog(@"probabilityInThisPosition = %f", probabilityInThisPosition);
+        
         //randon number that will say what path this ant will walk
         float target = [self randonBetweenMinimunValue:0 andMaximunValue:1];
         
         
-        for (int x = 0; x < [citiesNotVisited count]; x++){
+        for (int x = 0; x < [ant.citiesNotVisited count]; x++){
             //get chances of this city to be the next city to be visited
             float chances = [arrayOfChances[x] floatValue];
             
@@ -149,31 +161,40 @@
             if (target < chances) {
                 
                 //get the number of the next city
-                int nextCity = [citiesNotVisited[x] intValue];
+                int nextCity = [ant.citiesNotVisited[x] intValue];
                 
                 //increment pathSize of this ant by adding the distance from actual city to the next city
                 ant.pathSize += distanceBetweenCities[ant.actualCity][nextCity];
                 
                 //add the next city to the list of cities this ant already visited
-                [ant.visitedCities addObject:citiesNotVisited[x]];
+                [ant.visitedCities addObject:ant.citiesNotVisited[x]];
                 
                 //moves ant to the next city
                 ant.actualCity = nextCity;
                 
                 //removes next city from the list of cities already visited by this ant
-                [citiesNotVisited removeObjectAtIndex:x];
+                [ant.citiesNotVisited removeObjectAtIndex:x];
                 
                 //stop condition
-                x = [citiesNotVisited count] + 1;
+                x = [ant.citiesNotVisited count] + 1;
+                
+                //reset chances
+                [arrayOfChances removeAllObjects];
+                
+                probabilityInThisPosition = 0;
             }
+            
+            
         }
         
-        //set the path from last city to the fisrt city
-        [self setLastCityForAnt:ant];
+        
     }
     
+    //set the path from last city to the fisrt city
+    [self setLastCityForAnt:ant];
+    
     //NSLog(@"Path for ant %i: %f - path: %@", ant.firstCity, ant.pathSize, ant.visitedCities);
-    NSLog(@"Path for ant %i: %f ", ant.firstCity, ant.pathSize);
+    //NSLog(@"Path for ant %i: %f ", ant.firstCity, ant.pathSize);
     
 }
 
@@ -185,6 +206,9 @@
     
     //update visited cities
     [ant.visitedCities addObject:@(ant.firstCity)];
+    
+    //update actual city
+    ant.actualCity = ant.firstCity;
 }
 
 //gets the file and set the distances from all cities
@@ -243,6 +267,24 @@
 //returns the calculation based on pheromone, visibility and sum of all cities
 -(float)probabilityOfWalkingFromCity:(int)fromCity
                               toCity:(int)toCity
+                        sumOfChances:(float)sumOfChances{
+    
+    //get pheromone level
+    float pheromoneQuantity = [self pheromoneLevelFromCity:fromCity
+                                                    toCity:toCity];
+    
+    //get visibility
+    float cityVisibility = [self cityVisibilityFromCity:fromCity
+                                                 toCity:toCity];
+    
+    //returns the calculation based on pheromone, visibility and sum of all cities
+    return pheromoneQuantity * cityVisibility / sumOfChances;
+}
+
+
+//returns the calculation based on pheromone, visibility and sum of all cities
+-(float)probabilityOfWalkingFromCity:(int)fromCity
+                              toCity:(int)toCity
                                ofAnt:(Ant *)ant{
     
     //get pheromone level
@@ -263,15 +305,11 @@
 
 -(float)sumOfChancesForAnt:(Ant *)ant{
     float returnValue = 0;
-    for (int counter = 0; counter < NUMBEROFPOINTS; counter++) {
-        if (![ant.visitedCities containsObject:@(counter)]) {
-            if (ant.actualCity != counter) {
-                float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity toCity:counter];
-                float cityVisibility = [self cityVisibilityFromCity:ant.actualCity toCity:counter];
-                returnValue += pheromoneQuantity * cityVisibility;
-            }
-            
-        }
+    for (NSNumber *cityNotVisited in ant.citiesNotVisited) {
+        int city = [cityNotVisited intValue];
+        float pheromoneQuantity = [self pheromoneLevelFromCity:ant.actualCity toCity:city];
+        float cityVisibility = [self cityVisibilityFromCity:ant.actualCity toCity:city];
+        returnValue += pheromoneQuantity * cityVisibility;
     }
     return returnValue;
 }
@@ -308,11 +346,11 @@
     }
     
     for (Ant *ant in self.listOfAnts) {
-        for (int counter = 0; counter < [ant.visitedCities count]; counter++) {
+        for (int counter = 0; counter < [ant.visitedCities count] - 1; counter++) {
             int thisCity = [ant.visitedCities[counter] intValue];
             int nextCity = [ant.visitedCities[counter + 1] intValue];
             
-            pheromone[thisCity][nextCity] = QU * distanceBetweenCities[thisCity][nextCity];
+            pheromone[thisCity][nextCity] = QU / distanceBetweenCities[thisCity][nextCity];
         }
     }
     
@@ -321,11 +359,12 @@
 #pragma mark - best values
 
 //returns the best path after all ants walk
--(void)bestValues{
+-(void)bestValuesinIteraction:(int)iteraction{
     for (Ant *anAnt in self.listOfAnts) {
         if (anAnt.pathSize < self.bestPathSize) {
-            self.bestPathSize = anAnt.pathSize;
-            self.bestPath = anAnt.visitedCities;
+            NSLog(@"Best path for ant %i iteraction %i", anAnt.firstCity, iteraction);
+            self.bestPathSize = anAnt.pathSize ;
+            self.bestPath = [anAnt.visitedCities copy];
         }
         [anAnt.visitedCities removeAllObjects];
     }

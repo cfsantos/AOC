@@ -20,9 +20,15 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     AOC *aoc = [[AOC alloc] initWithNumberOfAnts:NUMBEROFPOINTS];
-    [aoc findBestPath];
     
-    NSLog(@"best path size = %f", aoc.bestPathSize);
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [aoc findBestPath];
+        NSLog(@"best path size = %f", aoc.bestPathSize);
+    });
+    
+    
+    
+    
     //[aoc setDistanceBetweenCitiesFromFileName:@"cities"];
 }
 
